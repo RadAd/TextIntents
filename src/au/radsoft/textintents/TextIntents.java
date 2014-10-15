@@ -6,6 +6,9 @@ import android.content.ClipboardManager;
 import android.content.ClipData;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
@@ -23,7 +26,7 @@ public class TextIntents extends Activity implements AdapterView.OnItemClickList
     {
         super.onCreate(savedInstanceState);
         
-        boolean customTitle = requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
+        //boolean customTitle = requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
         setContentView(R.layout.main);
         //if (customTitle)
         //{
@@ -56,6 +59,32 @@ public class TextIntents extends Activity implements AdapterView.OnItemClickList
 		setFinishOnTouchOutside(true);
     }
     
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.options, menu);
+        
+        return super.onCreateOptionsMenu(menu);
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+        case R.id.action_add:
+            toast("add");
+            break;
+            
+        default:
+            return false;
+        }
+        
+        return true;
+    }
+    
+    @Override // AdapterView.OnItemClickListener
     public void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
         open(view.getTag().toString());
