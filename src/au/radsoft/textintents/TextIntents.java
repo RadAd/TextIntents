@@ -52,7 +52,8 @@ public class TextIntents extends Activity implements AdapterView.OnItemClickList
             }
         }
         
-        final ChoiceAdapter adapter = new ChoiceAdapter(getLayoutInflater());
+        ChoiceAdapter.init(getPreferences(MODE_PRIVATE));
+        final ChoiceAdapter adapter = new ChoiceAdapter(getLayoutInflater(), getPreferences(MODE_PRIVATE));
         list.setAdapter(adapter);
 		list.setOnItemClickListener(this);
 		
