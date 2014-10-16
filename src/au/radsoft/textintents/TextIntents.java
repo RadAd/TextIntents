@@ -22,6 +22,8 @@ import java.net.URLEncoder;
 public class TextIntents extends Activity implements AdapterView.OnItemClickListener
 {
     EditText text_;
+    ListView list_;
+    
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -35,7 +37,7 @@ public class TextIntents extends Activity implements AdapterView.OnItemClickList
         //}
         
         text_ = (EditText) findViewById(R.id.text);
-        final ListView list = (ListView) findViewById(R.id.list);
+        list_ = (ListView) findViewById(R.id.list);
         
         Intent intent = getIntent();
         if (intent != null && intent.getAction() == Intent.ACTION_SEND)
@@ -55,9 +57,9 @@ public class TextIntents extends Activity implements AdapterView.OnItemClickList
         
         ChoiceAdapter.init(getPreferences(MODE_PRIVATE));
         final ChoiceAdapter adapter = new ChoiceAdapter(getLayoutInflater(), getPreferences(MODE_PRIVATE));
-        list.setAdapter(adapter);
-		list.setOnItemClickListener(this);
-        registerForContextMenu(list);
+        list_.setAdapter(adapter);
+		list_.setOnItemClickListener(this);
+        registerForContextMenu(list_);
 		
 		setFinishOnTouchOutside(true);
     }
@@ -77,7 +79,8 @@ public class TextIntents extends Activity implements AdapterView.OnItemClickList
         switch (item.getItemId())
         {
         case R.id.action_add:
-            toast("add");
+            ChoiceAdapter adapter = (ChoiceAdapter) list_.getAdapter();
+            adapter.add();
             break;
             
         default:
@@ -100,14 +103,15 @@ public class TextIntents extends Activity implements AdapterView.OnItemClickList
     public boolean onContextItemSelected(MenuItem item)
     {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        ChoiceAdapter adapter = (ChoiceAdapter) list_.getAdapter();
         switch (item.getItemId())
         {
         case R.id.action_edit:
-            toast("edit " + info.id);
+            adapter.edit(info.position);
             break;
             
         case R.id.action_delete:
-            toast("delete");
+            adapter.delete(info.position);
             break;
             
         default:

@@ -10,6 +10,9 @@ import android.view.ViewGroup;
 
 import android.content.SharedPreferences;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class ChoiceAdapter extends BaseAdapter
 {
     private static final String CHOICE_LIST = "_CHOICE_LIST";
@@ -51,18 +54,18 @@ public class ChoiceAdapter extends BaseAdapter
     
     private LayoutInflater layoutInflater_;
     private SharedPreferences sp_;
-    private String[] labels_;
+    private List<String> labels_ = new java.util.ArrayList<String>();
 
     public ChoiceAdapter(LayoutInflater li, SharedPreferences sp)
     {
         layoutInflater_ = li;
         sp_ = sp;
-        labels_ = sp_.getString(CHOICE_LIST, "Google").split(",");
+        labels_.addAll(Arrays.asList(sp_.getString(CHOICE_LIST, "Google").split(",")));
     }
 
     public int getCount()
     {
-        return labels_.length;
+        return labels_.size();
     }
 
     public Object getItem(int position)
@@ -77,7 +80,7 @@ public class ChoiceAdapter extends BaseAdapter
 
     public View getView(int position, View convertView, ViewGroup parent)
     {
-        final String label = labels_[position];
+        final String label = labels_.get(position);
         final String url = sp_.getString(URL_PREFIX + label, "");
         final int img = getImgId(url);
         
@@ -101,5 +104,25 @@ public class ChoiceAdapter extends BaseAdapter
             v.setTag(url);
         }
         return v;
+    }
+    
+    public void add()
+    {
+        final String label = "Foo";
+        labels_.add(label);
+        //sp_.edit().putString(URL_PREFIX + label, "http://").commit();
+        notifyDataSetChanged();;
+    }
+    
+    public void edit(int position)
+    {
+    }
+    
+    public void delete(int position)
+    {
+        final String label = labels_.get(position);
+        sp_.edit().remove(URL_PREFIX + label).commit();
+        labels_.remove(position);
+        notifyDataSetChanged();;
     }
 }
