@@ -6,6 +6,7 @@ import android.content.ClipboardManager;
 import android.content.ClipData;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuInflater;
@@ -56,6 +57,7 @@ public class TextIntents extends Activity implements AdapterView.OnItemClickList
         final ChoiceAdapter adapter = new ChoiceAdapter(getLayoutInflater(), getPreferences(MODE_PRIVATE));
         list.setAdapter(adapter);
 		list.setOnItemClickListener(this);
+        registerForContextMenu(list);
 		
 		setFinishOnTouchOutside(true);
     }
@@ -76,6 +78,36 @@ public class TextIntents extends Activity implements AdapterView.OnItemClickList
         {
         case R.id.action_add:
             toast("add");
+            break;
+            
+        default:
+            return false;
+        }
+        
+        return true;
+    }
+    
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo menuInfo)
+    {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.item, menu);
+
+        super.onCreateContextMenu(menu, view, menuInfo);
+    }
+    
+    @Override
+    public boolean onContextItemSelected(MenuItem item)
+    {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        switch (item.getItemId())
+        {
+        case R.id.action_edit:
+            toast("edit " + info.id);
+            break;
+            
+        case R.id.action_delete:
+            toast("delete");
             break;
             
         default:
