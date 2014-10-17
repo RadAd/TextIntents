@@ -112,29 +112,22 @@ public class ChoiceAdapter extends BaseAdapter
     
     public void add()
     {
-        doEdit(R.string.add, null);
+        doEditDialog(R.string.add, null);
     }
     
     public void edit(int position)
     {
         final String label = labels_.get(position);
-        doEdit(R.string.edit, label);
+        doEditDialog(R.string.edit, label);
     }
     
     public void delete(int position)
     {
         final String label = labels_.get(position);
-        labels_.remove(position);
-        
-        SharedPreferences.Editor spe = sp_.edit();
-        spe.putString(CHOICE_LIST, labelsString());
-        spe.remove(URL_PREFIX + label);
-        spe.commit();
-        
-        notifyDataSetChanged();
+        doDeleteDialog(label);
     }
     
-    String labelsString()
+    private String labelsAsString()
     {
         StringBuilder sb = new StringBuilder();
         for (String s : labels_)
@@ -144,7 +137,21 @@ public class ChoiceAdapter extends BaseAdapter
         return sb.substring(1);
     }
     
-    void update(String label, String newlabel, String newurl)
+    private void doDelete(String label)
+    {
+        int i = labels_.indexOf(label);
+        if (i != -1)
+            labels_.remove(i);
+        
+        SharedPreferences.Editor spe = sp_.edit();
+        spe.putString(CHOICE_LIST, labelsAsString());
+        spe.remove(URL_PREFIX + label);
+        spe.commit();
+        
+        notifyDataSetChanged();
+    }
+    
+    private void doUpdate(String label, String newlabel, String newurl)
     {
         boolean isnew = !newlabel.equals(label);
         
@@ -160,7 +167,7 @@ public class ChoiceAdapter extends BaseAdapter
         SharedPreferences.Editor spe = sp_.edit();
         if (isnew)
         {
-            spe.putString(CHOICE_LIST, labelsString());
+            spe.putString(CHOICE_LIST, labelsAsString());
             spe.remove(URL_PREFIX + label).commit();
         }
         spe.putString(URL_PREFIX + newlabel, newurl);
@@ -169,7 +176,7 @@ public class ChoiceAdapter extends BaseAdapter
         notifyDataSetChanged();
     }
     
-    void doEdit(int title, final String label)
+    private void doEditDialog(int title, final String label)
     {
         String url = sp_.getString(URL_PREFIX + label, "");
         View v = layoutInflater_.inflate(R.layout.edit, null);
@@ -190,7 +197,25 @@ public class ChoiceAdapter extends BaseAdapter
                 {
                     String newlabel = labelv.getText().toString();
                     String newurl = urlv.getText().toString();
-                    update(label, newlabel, newurl);
+                    doUpdate(label, newlabel, newurl);
+                }
+            });
+        builder.setNegativeButton(android.R.string.cancel, null);
+        builder.show();
+    }
+    
+    private void doDeleteDialog(final String label)
+    {
+        final String deleteQuery = layoutInflater_.getContext().getResources().getString(R.string.delete_query);
+        
+        AlertDialog.Builder builder = new AlertDialog.Builder(layoutInflater_.getContext());
+        builder.setTitle(R.string.delete);
+        builder.setMessage(String.format(deleteQuery, label));
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener()
+            {
+                public void onClick(DialogInterface dialog, int id)
+                {
+                    doDelete(label);
                 }
             });
         builder.setNegativeButton(android.R.string.cancel, null);
