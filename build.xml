@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="TextIntents" default="help">
+<project name="TextIntents" default="debug">
 
     <property environment="env"/>
 

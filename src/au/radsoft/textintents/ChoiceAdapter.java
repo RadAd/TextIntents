@@ -2,12 +2,16 @@ package au.radsoft.textintents;
 
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.app.AlertDialog;
+
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 
 import java.util.Arrays;
@@ -108,21 +112,88 @@ public class ChoiceAdapter extends BaseAdapter
     
     public void add()
     {
-        final String label = "Foo";
-        labels_.add(label);
-        //sp_.edit().putString(URL_PREFIX + label, "http://").commit();
-        notifyDataSetChanged();;
+        doEdit(R.string.add, null);
     }
     
     public void edit(int position)
     {
+        final String label = labels_.get(position);
+        doEdit(R.string.edit, label);
     }
     
     public void delete(int position)
     {
         final String label = labels_.get(position);
-        sp_.edit().remove(URL_PREFIX + label).commit();
         labels_.remove(position);
-        notifyDataSetChanged();;
+        
+        SharedPreferences.Editor spe = sp_.edit();
+        spe.putString(CHOICE_LIST, labelsString());
+        spe.remove(URL_PREFIX + label);
+        spe.commit();
+        
+        notifyDataSetChanged();
+    }
+    
+    String labelsString()
+    {
+        StringBuilder sb = new StringBuilder();
+        for (String s : labels_)
+        {
+            sb.append(',').append(s);
+        }
+        return sb.substring(1);
+    }
+    
+    void update(String label, String newlabel, String newurl)
+    {
+        boolean isnew = !newlabel.equals(label);
+        
+        if (isnew)
+        {
+            int i = labels_.indexOf(label);
+            if (i == -1)
+                labels_.add(newlabel);
+            else
+                labels_.set(i, newlabel);
+        }
+        
+        SharedPreferences.Editor spe = sp_.edit();
+        if (isnew)
+        {
+            spe.putString(CHOICE_LIST, labelsString());
+            spe.remove(URL_PREFIX + label).commit();
+        }
+        spe.putString(URL_PREFIX + newlabel, newurl);
+        spe.commit();
+        
+        notifyDataSetChanged();
+    }
+    
+    void doEdit(int title, final String label)
+    {
+        String url = sp_.getString(URL_PREFIX + label, "");
+        View v = layoutInflater_.inflate(R.layout.edit, null);
+        final EditText labelv = (EditText) v.findViewById(R.id.label);
+        final EditText urlv = (EditText) v.findViewById(R.id.url);
+        
+        if (label != null)
+            labelv.setText(label);
+        urlv.setText(url);
+        
+        AlertDialog.Builder builder = new AlertDialog.Builder(layoutInflater_.getContext());
+        builder.setTitle(title);
+        //builder.setMessage(url);
+        builder.setView(v);
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener()
+            {
+                public void onClick(DialogInterface dialog, int id)
+                {
+                    String newlabel = labelv.getText().toString();
+                    String newurl = urlv.getText().toString();
+                    update(label, newlabel, newurl);
+                }
+            });
+        builder.setNegativeButton(android.R.string.cancel, null);
+        builder.show();
     }
 }
