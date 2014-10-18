@@ -35,10 +35,15 @@ public class TextIntents extends Activity implements AdapterView.OnItemClickList
         super.onCreate(savedInstanceState);
         
         //boolean customTitle = requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
+        //boolean customIcon = requestWindowFeature(Window.FEATURE_LEFT_ICON);
         setContentView(R.layout.main);
         //if (customTitle)
         //{
             //getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.title);
+        //}
+        //if (customIcon)
+        //{
+            //getWindow().setFeatureInt(Window.FEATURE_LEFT_ICON, R.drawable.wikipedia_icon);
         //}
         
         text_ = (EditText) findViewById(R.id.text);
