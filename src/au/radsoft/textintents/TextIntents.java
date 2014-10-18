@@ -1,17 +1,22 @@
 package au.radsoft.textintents;
 
 import android.app.Activity;
+
 import android.content.Intent;
 import android.content.ClipboardManager;
 import android.content.ClipData;
+
 import android.net.Uri;
+
 import android.os.Bundle;
+
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.Window;
+
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;

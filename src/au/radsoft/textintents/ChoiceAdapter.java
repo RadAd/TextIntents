@@ -4,6 +4,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -191,17 +192,36 @@ public class ChoiceAdapter extends BaseAdapter
         builder.setTitle(title);
         //builder.setMessage(url);
         builder.setView(v);
-        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener()
+		//builder.setCancelable(false);
+        builder.setPositiveButton(android.R.string.ok, null);
+        builder.setNegativeButton(android.R.string.cancel, null);
+        final AlertDialog ad = builder.show();
+        ad.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener()
             {
-                public void onClick(DialogInterface dialog, int id)
+                public void onClick(View v)
                 {
                     String newlabel = labelv.getText().toString();
                     String newurl = urlv.getText().toString();
-                    doUpdate(label, newlabel, newurl);
+                    boolean isnew = !newlabel.equals(label);
+                    if (newlabel.isEmpty())
+                    {
+                        Toast.makeText(layoutInflater_.getContext(), "Please enter a label.", Toast.LENGTH_LONG).show();
+                    }
+                    else if (newurl.isEmpty())
+                    {
+                        Toast.makeText(layoutInflater_.getContext(), "Please enter a url.", Toast.LENGTH_LONG).show();
+                    }
+                    else if (isnew && labels_.indexOf(newlabel) != -1)
+                    {
+                        Toast.makeText(layoutInflater_.getContext(), "The label already exists.", Toast.LENGTH_LONG).show();
+                    }
+                    else
+                    {
+                        doUpdate(label, newlabel, newurl);
+                        ad.dismiss();
+                    }
                 }
             });
-        builder.setNegativeButton(android.R.string.cancel, null);
-        builder.show();
     }
     
     private void doDeleteDialog(final String label)
