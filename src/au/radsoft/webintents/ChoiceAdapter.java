@@ -1,4 +1,4 @@
-package au.radsoft.textintents;
+package au.radsoft.webintents;
 
 import android.widget.BaseAdapter;
 import android.widget.ImageView;

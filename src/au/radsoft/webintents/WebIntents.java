@@ -1,4 +1,4 @@
-package au.radsoft.textintents;
+package au.radsoft.webintents;
 
 import android.app.Activity;
 
@@ -24,7 +24,7 @@ import android.widget.Toast;
 
 import java.net.URLEncoder;
 
-public class TextIntents extends Activity implements AdapterView.OnItemClickListener
+public class WebIntents extends Activity implements AdapterView.OnItemClickListener
 {
     EditText text_;
     ListView list_;
