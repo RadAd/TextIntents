@@ -80,7 +80,8 @@ public class ChoiceAdapter extends BaseAdapter
 
     public long getItemId(int position)
     {
-        return 0;
+        final String label = labels_.get(position);
+        return label.hashCode();
     }
 
     public View getView(int position, View convertView, ViewGroup parent)
@@ -126,6 +127,22 @@ public class ChoiceAdapter extends BaseAdapter
     {
         final String label = labels_.get(position);
         doDeleteDialog(label);
+    }
+    
+    public void moveUp(int position)
+    {
+        if (position > 0)
+        {
+            doSwap(position, position - 1);
+        }
+    }
+    
+    public void moveDown(int position)
+    {
+        if (position < (labels_.size() - 1))
+        {
+            doSwap(position, position + 1);
+        }
     }
     
     private String labelsAsString()
@@ -177,6 +194,19 @@ public class ChoiceAdapter extends BaseAdapter
         notifyDataSetChanged();
     }
     
+    public void doSwap(int p1, int p2)
+    {
+        final String label = labels_.get(p1);
+        labels_.set(p1, labels_.get(p2));
+        labels_.set(p2, label);
+        
+        SharedPreferences.Editor spe = sp_.edit();
+        spe.putString(CHOICE_LIST, labelsAsString());
+        spe.commit();
+        
+        notifyDataSetChanged();
+    }
+    
     private void doEditDialog(int title, final String label)
     {
         String url = sp_.getString(URL_PREFIX + label, "");
@@ -205,15 +235,15 @@ public class ChoiceAdapter extends BaseAdapter
                     boolean isnew = !newlabel.equals(label);
                     if (newlabel.isEmpty())
                     {
-                        Toast.makeText(layoutInflater_.getContext(), "Please enter a label.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(layoutInflater_.getContext(), R.string.error_label, Toast.LENGTH_LONG).show();
                     }
                     else if (newurl.isEmpty())
                     {
-                        Toast.makeText(layoutInflater_.getContext(), "Please enter a url.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(layoutInflater_.getContext(), R.string.error_url_template, Toast.LENGTH_LONG).show();
                     }
                     else if (isnew && labels_.indexOf(newlabel) != -1)
                     {
-                        Toast.makeText(layoutInflater_.getContext(), "The label already exists.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(layoutInflater_.getContext(), R.string.error_label_exists, Toast.LENGTH_LONG).show();
                     }
                     else
                     {

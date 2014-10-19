@@ -124,6 +124,14 @@ public class WebIntents extends Activity implements AdapterView.OnItemClickListe
             adapter.delete(info.position);
             break;
             
+        case R.id.action_move_up:
+            adapter.moveUp(info.position);
+            break;
+            
+        case R.id.action_move_down:
+            adapter.moveDown(info.position);
+            break;
+            
         default:
             return false;
         }

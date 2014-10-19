@@ -14,7 +14,7 @@
         android:id="@+id/url"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/url"
+        android:hint="@string/url_template"
         android:inputType="textUri"
         />
 </LinearLayout>

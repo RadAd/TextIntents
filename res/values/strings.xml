@@ -4,7 +4,12 @@
     <string name="add">Add</string>
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
+    <string name="move_up">Move up</string>
+    <string name="move_down">Move down</string>
     <string name="delete_query">Delete %s?</string>
     <string name="label">Label</string>
-    <string name="url">Url</string>
+    <string name="url_template">Url template</string>
+    <string name="error_label">Please enter a label.</string>
+    <string name="error_label_exists">The label already exists.</string>
+    <string name="error_url_template">Please enter a url template.</string>
 </resources>
