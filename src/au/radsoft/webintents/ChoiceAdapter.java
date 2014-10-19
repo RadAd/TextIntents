@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 
 import android.app.AlertDialog;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 
@@ -20,15 +21,18 @@ import java.util.List;
 
 public class ChoiceAdapter extends BaseAdapter
 {
+    private static final String PREFERENCES = "au.radsoft.webintents.TEMPLATES";
     private static final String CHOICE_LIST = "_CHOICE_LIST";
     private static final String URL_PREFIX = "_URL_";
     
-    public static void init(SharedPreferences sp)
+    public static void init(Context context, boolean reset)
     {
-        if (!sp.contains(CHOICE_LIST))
+        SharedPreferences sp = context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE);
+        if (reset || !sp.contains(CHOICE_LIST))
         {
             SharedPreferences.Editor spe = sp.edit();
-            //spe.clear();
+            if (reset)
+                spe.clear();
             spe.putString(URL_PREFIX + "Google", "https://www.google.com/?gws_rd=ssl#q=[text]");
             spe.putString(URL_PREFIX + "Dictionary", "https://dictionary.reference.com/browse/[text]");
             spe.putString(URL_PREFIX + "Wikipedia", "https://en.wikipedia.org/wiki/[text]");
@@ -57,17 +61,24 @@ public class ChoiceAdapter extends BaseAdapter
             return R.drawable.internet_icon;
     }
     
+    private Context context_;
     private LayoutInflater layoutInflater_;
     private SharedPreferences sp_;
     private List<String> labels_ = new java.util.ArrayList<String>();
 
-    public ChoiceAdapter(LayoutInflater li, SharedPreferences sp)
+    public ChoiceAdapter(Context context)
     {
-        layoutInflater_ = li;
-        sp_ = sp;
+        context_ = context;
+        layoutInflater_ = LayoutInflater.from(context_);
+        sp_ = context_.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE);
         labels_.addAll(Arrays.asList(sp_.getString(CHOICE_LIST, "Google").split(",")));
     }
 
+    private Context getContext()
+    {
+        return context_;
+    }
+    
     public int getCount()
     {
         return labels_.size();
@@ -152,7 +163,10 @@ public class ChoiceAdapter extends BaseAdapter
         {
             sb.append(',').append(s);
         }
-        return sb.substring(1);
+        if (sb.length() == 0)
+            return "";
+        else
+            return sb.substring(1);
     }
     
     private void doDelete(String label)
@@ -218,7 +232,7 @@ public class ChoiceAdapter extends BaseAdapter
             labelv.setText(label);
         urlv.setText(url);
         
-        AlertDialog.Builder builder = new AlertDialog.Builder(layoutInflater_.getContext());
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle(title);
         //builder.setMessage(url);
         builder.setView(v);
@@ -235,15 +249,15 @@ public class ChoiceAdapter extends BaseAdapter
                     boolean isnew = !newlabel.equals(label);
                     if (newlabel.isEmpty())
                     {
-                        Toast.makeText(layoutInflater_.getContext(), R.string.error_label, Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(), R.string.error_label, Toast.LENGTH_LONG).show();
                     }
                     else if (newurl.isEmpty())
                     {
-                        Toast.makeText(layoutInflater_.getContext(), R.string.error_url_template, Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(), R.string.error_url_template, Toast.LENGTH_LONG).show();
                     }
                     else if (isnew && labels_.indexOf(newlabel) != -1)
                     {
-                        Toast.makeText(layoutInflater_.getContext(), R.string.error_label_exists, Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(), R.string.error_label_exists, Toast.LENGTH_LONG).show();
                     }
                     else
                     {
@@ -256,11 +270,11 @@ public class ChoiceAdapter extends BaseAdapter
     
     private void doDeleteDialog(final String label)
     {
-        final String deleteQuery = layoutInflater_.getContext().getResources().getString(R.string.delete_query);
+        final String deleteQuery = getContext().getResources().getString(R.string.delete_query, label);
         
-        AlertDialog.Builder builder = new AlertDialog.Builder(layoutInflater_.getContext());
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle(R.string.delete);
-        builder.setMessage(String.format(deleteQuery, label));
+        builder.setMessage(deleteQuery);
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener()
             {
                 public void onClick(DialogInterface dialog, int id)

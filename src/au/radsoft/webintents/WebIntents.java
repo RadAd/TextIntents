@@ -64,9 +64,9 @@ public class WebIntents extends Activity implements AdapterView.OnItemClickListe
                 text_.setText(item.coerceToText(this).toString());
             }
         }
-        
-        ChoiceAdapter.init(getPreferences(MODE_PRIVATE));
-        final ChoiceAdapter adapter = new ChoiceAdapter(getLayoutInflater(), getPreferences(MODE_PRIVATE));
+		
+		ChoiceAdapter.init(this, false);
+        final ChoiceAdapter adapter = new ChoiceAdapter(this);
         list_.setAdapter(adapter);
 		list_.setOnItemClickListener(this);
         registerForContextMenu(list_);
