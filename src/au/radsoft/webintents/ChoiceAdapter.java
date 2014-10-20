@@ -36,7 +36,8 @@ public class ChoiceAdapter extends BaseAdapter
             spe.putString(URL_PREFIX + "Google", "https://www.google.com/?gws_rd=ssl#q=[text]");
             spe.putString(URL_PREFIX + "Dictionary", "https://dictionary.reference.com/browse/[text]");
             spe.putString(URL_PREFIX + "Wikipedia", "https://en.wikipedia.org/wiki/[text]");
-            spe.putString(CHOICE_LIST, "Google,Dictionary,Wikipedia");
+			spe.putString(URL_PREFIX + "Add to Google Bookmarks", "https://www.google.com/bookmarks/mark?op=edit&output=popup&bkmk=[text]&title=[subject]");
+            spe.putString(CHOICE_LIST, "Google,Dictionary,Wikipedia,Add to Google Bookmarks");
             spe.commit();
         }
     }
@@ -51,12 +52,16 @@ public class ChoiceAdapter extends BaseAdapter
                 offset += i.length();
         }
         
-        if (url.startsWith("google.com", offset))
+        if (url.startsWith("google.com/bookmarks", offset))
+            return R.drawable.bookmark_add_icon;
+		else if (url.startsWith("google.com", offset))
             return R.drawable.google_icon;
         else if (url.startsWith("dictionary.reference.com", offset))
             return R.drawable.dictionary_icon;
         else if (url.startsWith("wikipedia.org", offset))
             return R.drawable.wikipedia_icon;
+        else if (url.startsWith("bkmks.com", offset))
+            return R.drawable.bkmks_icon;
         else
             return R.drawable.internet_icon;
     }
