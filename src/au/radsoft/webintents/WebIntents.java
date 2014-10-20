@@ -28,6 +28,7 @@ public class WebIntents extends Activity implements AdapterView.OnItemClickListe
 {
     EditText text_;
     ListView list_;
+    CharSequence subject_;
     
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -53,6 +54,7 @@ public class WebIntents extends Activity implements AdapterView.OnItemClickListe
         if (intent != null && intent.getAction() == Intent.ACTION_SEND)
         {
             text_.setText(intent.getCharSequenceExtra(Intent.EXTRA_TEXT));
+            subject_ = intent.getCharSequenceExtra(Intent.EXTRA_SUBJECT);
         }
         else
         {
@@ -150,6 +152,8 @@ public class WebIntents extends Activity implements AdapterView.OnItemClickListe
         CharSequence text = text_.getText();
         if (text != null)
             s = s.replace("[text]", URLEncoder.encode(text.toString()));
+        if (subject_ != null)
+            s = s.replace("[subject]", URLEncoder.encode(subject_.toString()));
             
         Uri uri = Uri.parse(s);
         toast(s);
