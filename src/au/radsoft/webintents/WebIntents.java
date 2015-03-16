@@ -2,13 +2,11 @@ package au.radsoft.webintents;
 
 import android.app.Activity;
 
+import android.os.Bundle;
+
 import android.content.Intent;
 import android.content.ClipboardManager;
 import android.content.ClipData;
-
-import android.net.Uri;
-
-import android.os.Bundle;
 
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -22,9 +20,11 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import android.net.Uri;
+
 import java.net.URLEncoder;
 
-public class WebIntents extends Activity implements AdapterView.OnItemClickListener
+public class WebIntents extends ActivityEx implements AdapterView.OnItemClickListener
 {
     EditText text_;
     ListView list_;
@@ -33,19 +33,9 @@ public class WebIntents extends Activity implements AdapterView.OnItemClickListe
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
-        super.onCreate(savedInstanceState);
-        
-        //boolean customTitle = requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
-        //boolean customIcon = requestWindowFeature(Window.FEATURE_LEFT_ICON);
         setContentView(R.layout.main);
-        //if (customTitle)
-        //{
-            //getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.title);
-        //}
-        //if (customIcon)
-        //{
-            //getWindow().setFeatureInt(Window.FEATURE_LEFT_ICON, R.drawable.wikipedia_icon);
-        //}
+        
+        super.onCreate(savedInstanceState);
         
         text_ = (EditText) findViewById(R.id.text);
         list_ = (ListView) findViewById(R.id.list);
@@ -75,7 +65,7 @@ public class WebIntents extends Activity implements AdapterView.OnItemClickListe
 		
 		setFinishOnTouchOutside(true);
     }
-    
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
