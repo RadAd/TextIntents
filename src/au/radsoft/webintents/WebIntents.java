@@ -139,17 +139,26 @@ public class WebIntents extends ActivityEx implements AdapterView.OnItemClickLis
     
     void open(String s)
     {
-        CharSequence text = text_.getText();
-        if (text != null)
-            s = s.replace("[text]", URLEncoder.encode(text.toString()));
-        if (subject_ != null)
-            s = s.replace("[subject]", URLEncoder.encode(subject_.toString()));
+        try
+        {
+            CharSequence text = text_.getText();
+            if (text != null)
+                s = s.replace("[text]", URLEncoder.encode(text.toString()));
+            if (text != null)
+                s = s.replace("[rawtext]", text.toString());
+            if (subject_ != null)
+                s = s.replace("[subject]", URLEncoder.encode(subject_.toString()));
             
-        Uri uri = Uri.parse(s);
-        toast(s);
+            Uri uri = Uri.parse(s);
+            //toast(s);
         
-        Intent i = new Intent(Intent.ACTION_VIEW, uri);
-        startActivity(i);
+            Intent i = new Intent(Intent.ACTION_VIEW, uri);
+            startActivity(i);
+        }
+        catch (android.content.ActivityNotFoundException e)
+        {
+            toast("No activity found");
+        }
     }
     
     void toast(String msg)
