@@ -1,7 +1,5 @@
 package au.radsoft.webintents;
 
-import android.app.Activity;
-
 import android.os.Bundle;
 
 import android.content.Intent;
@@ -13,7 +11,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuInflater;
 import android.view.View;
-import android.view.Window;
 
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -29,6 +26,7 @@ public class WebIntents extends ActivityEx implements AdapterView.OnItemClickLis
     EditText text_;
     ListView list_;
     CharSequence subject_;
+    ChoiceAdapter adapter_;
     
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -58,8 +56,8 @@ public class WebIntents extends ActivityEx implements AdapterView.OnItemClickLis
         }
 		
 		ChoiceAdapter.init(this, false);
-        final ChoiceAdapter adapter = new ChoiceAdapter(this);
-        list_.setAdapter(adapter);
+        adapter_ = new ChoiceAdapter(this);
+        list_.setAdapter(adapter_);
 		list_.setOnItemClickListener(this);
         registerForContextMenu(list_);
 		
@@ -81,8 +79,7 @@ public class WebIntents extends ActivityEx implements AdapterView.OnItemClickLis
         switch (item.getItemId())
         {
         case R.id.action_add:
-            ChoiceAdapter adapter = (ChoiceAdapter) list_.getAdapter();
-            adapter.add();
+            adapter_.add();
             break;
             
         default:
@@ -105,23 +102,22 @@ public class WebIntents extends ActivityEx implements AdapterView.OnItemClickLis
     public boolean onContextItemSelected(MenuItem item)
     {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        ChoiceAdapter adapter = (ChoiceAdapter) list_.getAdapter();
         switch (item.getItemId())
         {
         case R.id.action_edit:
-            adapter.edit(info.position);
+            adapter_.edit(info.position);
             break;
             
         case R.id.action_delete:
-            adapter.delete(info.position);
+            adapter_.delete(info.position);
             break;
             
         case R.id.action_move_up:
-            adapter.moveUp(info.position);
+            adapter_.moveUp(info.position);
             break;
             
         case R.id.action_move_down:
-            adapter.moveDown(info.position);
+            adapter_.moveDown(info.position);
             break;
             
         default:

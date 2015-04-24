@@ -106,25 +106,30 @@ public class ChoiceAdapter extends BaseAdapter
         final String url = sp_.getString(URL_PREFIX + label, "");
         final int img = getImgId(url);
         
-        View v = layoutInflater_.inflate(R.layout.item, parent, false);
+        View v = convertView;
+        if (v == null)
+            v = layoutInflater_.inflate(R.layout.item, parent, false);
+            
+        TextView labelv = (TextView) v.findViewById(R.id.label);
+        if (labelv != null)
         {
-            TextView labelv = (TextView) v.findViewById(R.id.label);
-            if (labelv != null)
-            {
-                labelv.setText(label);
-            }
-            TextView secondLinev = (TextView) v.findViewById(R.id.secondLine);
-            if (secondLinev != null)
-            {
-                secondLinev.setText(url);
-            }
-            ImageView iconv = (ImageView) v.findViewById(R.id.icon);
-            if (iconv!= null)
-            {
-                iconv.setImageResource(img);
-            }
-            v.setTag(url);
+            labelv.setText(label);
         }
+        
+        TextView secondLinev = (TextView) v.findViewById(R.id.secondLine);
+        if (secondLinev != null)
+        {
+            secondLinev.setText(url);
+        }
+        
+        ImageView iconv = (ImageView) v.findViewById(R.id.icon);
+        if (iconv!= null)
+        {
+            iconv.setImageResource(img);
+        }
+        
+        v.setTag(url);
+
         return v;
     }
     
