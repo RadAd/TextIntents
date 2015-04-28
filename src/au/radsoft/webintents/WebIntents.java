@@ -1,5 +1,7 @@
 package au.radsoft.webintents;
 
+import android.app.Activity;
+
 import android.os.Bundle;
 
 import android.content.Intent;
@@ -11,6 +13,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager.LayoutParams;
 
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -21,22 +25,23 @@ import android.net.Uri;
 
 import java.net.URLEncoder;
 
-public class WebIntents extends ActivityEx implements AdapterView.OnItemClickListener
+public class WebIntents extends Activity implements AdapterView.OnItemClickListener
 {
     EditText text_;
-    ListView list_;
     CharSequence subject_;
     ChoiceAdapter adapter_;
     
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
+        enableActionBar();
+        
         setContentView(R.layout.main);
         
         super.onCreate(savedInstanceState);
         
         text_ = (EditText) findViewById(R.id.text);
-        list_ = (ListView) findViewById(R.id.list);
+        ListView list = (ListView) findViewById(R.id.list);
         
         Intent intent = getIntent();
         if (intent != null && intent.getAction() == Intent.ACTION_SEND)
@@ -57,13 +62,26 @@ public class WebIntents extends ActivityEx implements AdapterView.OnItemClickLis
 		
 		ChoiceAdapter.init(this, false);
         adapter_ = new ChoiceAdapter(this);
-        list_.setAdapter(adapter_);
-		list_.setOnItemClickListener(this);
-        registerForContextMenu(list_);
+        list.setAdapter(adapter_);
+		list.setOnItemClickListener(this);
+        registerForContextMenu(list);
 		
 		setFinishOnTouchOutside(true);
     }
 
+    private void enableActionBar()
+    {
+        requestWindowFeature(Window.FEATURE_ACTION_BAR);
+        
+        android.util.DisplayMetrics metrics = new android.util.DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        
+        LayoutParams params = getWindow().getAttributes(); 
+        params.width = metrics.widthPixels/2;
+        params.height = LayoutParams.WRAP_CONTENT;
+        getWindow().setAttributes(params);
+    }
+    
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
